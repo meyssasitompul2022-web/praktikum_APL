@@ -19,8 +19,9 @@ void tampilMenu(){
     cout << "2. Lihat Data\n";
     cout << "3. Ubah Data\n";
     cout << "4. Hapus Data\n";
-    cout << "5. Hitung Total Data (Rekursif)\n";
-    cout << "6. Keluar\n";
+    cout << "5. Hitung Total Data\n";
+    cout << "6. Mengurutkan Data\n";
+    cout << "7. Keluar\n";
     cout << "Pilih menu : ";
 }
 
@@ -154,11 +155,73 @@ bool login(User *user){
     return false;
 }
 
+void sortNamaAsc(Photobox *data, int jumlah){
+    for(int i=0;i<jumlah-1;i++){
+        for(int j=0;j<jumlah-i-1;j++){
+            if((data+j)->nama > (data+j+1)->nama){
+                swap(*(data+j), *(data+j+1));
+            }
+        }
+    }
+    cout<<"Mengurutkan nama berhasil.\n";
+}
+
+void sortIdDesc(Photobox *data, int jumlah){
+    for(int i=0;i<jumlah-1;i++){
+        int maxIndex=i;
+
+        for(int j=i+1;j<jumlah;j++){
+            if((data+j)->id > (data+maxIndex)->id){
+                maxIndex=j;
+            }
+        }
+
+        swap(*(data+i), *(data+maxIndex));
+    }
+    cout<<"Mengurutkan ID  berhasil.\n";
+}
+
+void sortJenisAsc(Photobox *data, int jumlah){
+    for(int i=1;i<jumlah;i++){
+        Photobox key = *(data+i);
+        int j=i-1;
+
+        while(j>=0 && (data+j)->jenisFoto > key.jenisFoto){
+            *(data+j+1)=*(data+j);
+            j--;
+        }
+
+        *(data+j+1)=key;
+    }
+    cout<<"Mengurutkan jenis foto berhasil.\n";
+}
+
+void menuSorting(Photobox *data, int jumlah){
+    int pilih;
+
+    cout<<"\n===== MENU SORTING =====\n";
+    cout<<"1. Mengurutkan Nama\n";
+    cout<<"2. Mengurutkan ID\n";
+    cout<<"3. Mengurutkan Jenis Foto\n";
+    cout<<"Pilih : ";
+    cin>>pilih;
+
+    if(pilih==1)
+        sortNamaAsc(data, jumlah);
+    else if(pilih==2)
+        sortIdDesc(data, jumlah);
+    else if(pilih==3)
+        sortJenisAsc(data, jumlah);
+    else
+        cout<<"Pilihan tidak valid.\n";
+
+    lihatData(data, jumlah);
+}
+
 int main(){
 
     User user={"Mey","108"};
 
-    // ✅ address-of operator (&)
     if(!login(&user)){
         cout<<"Anda gagal login 3 kali. Program berhenti.\n";
         return 0;
@@ -174,7 +237,7 @@ int main(){
         cin>>pilihan;
 
         if(pilihan==1)
-            tambahData(data, &jumlah); // & digunakan
+            tambahData(data, &jumlah);
 
         else if(pilihan==2)
             lihatData(data, jumlah);
@@ -188,7 +251,10 @@ int main(){
         else if(pilihan==5)
             cout<<"Total data (rekursif): "<<hitungData(jumlah)<<endl;
 
-    }while(pilihan!=6);
+        else if(pilihan==6)
+            menuSorting(data, jumlah);
+
+    }while(pilihan!=7);
 
     cout<<"Terima kasih telah menggunakan sistem.\n";
 }
